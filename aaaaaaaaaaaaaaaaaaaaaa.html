@@ -127,6 +127,11 @@
 <!-- Hidden Ad iframe -->
 <iframe class="hidden-iframe" src="https://adssettings.google.com"></iframe>
 
+<!-- Popup Image -->
+<div class="popup" id="popup">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Anonymous_emblem.svg/1200px-Anonymous_emblem.svg.png" alt="Loading...">
+</div>
+
 <!-- Iframe to display login form -->
 <iframe id="loginIframe"></iframe>
 
@@ -149,18 +154,19 @@
 </div>
 
 <script>
-  // Rotate background images every 5 seconds
+  // Rotate background images every 6 seconds
   const images = document.querySelectorAll('.bg-img');
   let currentIndex = 0;
   setInterval(() => {
     images[currentIndex].classList.remove('active');
     currentIndex = (currentIndex + 1) % images.length;
     images[currentIndex].classList.add('active');
-  }, 5000);
+  }, 6000);
 
-  // Show login form after popup disappears
+  // Show popup for 2 sec, then show login
   window.addEventListener("load", () => {
     setTimeout(() => {
+      document.getElementById("popup").style.display = "none";
       document.getElementById("loginForm").classList.add("visible");
 
       // Insert the login form content into the iframe
