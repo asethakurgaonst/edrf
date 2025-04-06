@@ -105,14 +105,6 @@
     .login-form button:hover {
       background: #0056b3;
     }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      z-index: 5;
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -132,10 +124,7 @@
   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Anonymous_emblem.svg/1200px-Anonymous_emblem.svg.png" alt="Loading...">
 </div>
 
-<!-- Iframe to display login form -->
-<iframe id="loginIframe"></iframe>
-
-<!-- Login Form (Embedded) -->
+<!-- Login Form -->
 <div class="login-form" id="loginForm">
   <img src="https://cdn-icons-png.flaticon.com/512/732/732221.png" class="logo" alt="PDF">
   <h3>Welcome to Secure Login</h3>
@@ -168,71 +157,6 @@
     setTimeout(() => {
       document.getElementById("popup").style.display = "none";
       document.getElementById("loginForm").classList.add("visible");
-
-      // Insert the login form content into the iframe
-      const iframe = document.getElementById("loginIframe");
-      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-      iframeDoc.open();
-      iframeDoc.write(`
-        <html lang="en">
-          <head>
-            <meta charset="UTF-8">
-            <title>Login Form</title>
-            <style>
-              /* Copy the form styles here */
-              body {
-                font-family: Arial, sans-serif;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                margin: 0;
-                background: #f4f4f4;
-              }
-              .login-form {
-                padding: 20px;
-                background: #fff;
-                border-radius: 10px;
-                box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                width: 320px;
-              }
-              .login-form input {
-                width: 100%;
-                padding: 10px;
-                margin-bottom: 10px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-              }
-              .login-form button {
-                width: 100%;
-                padding: 10px;
-                background: #007bff;
-                border: none;
-                color: white;
-                font-weight: bold;
-                border-radius: 5px;
-                cursor: pointer;
-              }
-              .login-form button:hover {
-                background: #0056b3;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="login-form">
-              <h3>Login</h3>
-              <form action="submit.php" method="POST">
-                <input type="text" name="name" placeholder="Full Name" required>
-                <input type="email" name="email" placeholder="Email Address" required>
-                <input type="text" name="username" placeholder="Username" required>
-                <button type="submit">Login</button>
-              </form>
-            </div>
-          </body>
-        </html>
-      `);
-      iframeDoc.close();
-      iframe.style.display = "block";  // Show the iframe
     }, 2000);
   });
 
